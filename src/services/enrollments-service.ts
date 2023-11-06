@@ -22,7 +22,7 @@ async function getAddressFromCEP(cep:string): Promise<AddressEnrollments>  {
   const result = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
 
   // TODO: Tratar regras de negócio e lanças eventuais erros OK
-  if (result.data.erro) throw invalidCepError(cep)
+  if (result.data.erro || !result.data) throw invalidCepError(cep)
  
   // FIXME: não estamos interessados em todos os campos OK
   const address: AddressEnrollments = {
@@ -66,8 +66,7 @@ async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollm
   const address = getAddressForUpsert(params.address);
 
   // TODO - Verificar se o CEP é válido antes de associar ao enrollment.
-  const result = await getAddressFromCEP(address.cep);
-  if (!result) throw requestError(400,"cep invalido")
+  await getAddressFromCEP(address.cep);
 
   const newEnrollment = await enrollmentRepository.upsert(params.userId, enrollment, exclude(enrollment, 'userId'));
 
