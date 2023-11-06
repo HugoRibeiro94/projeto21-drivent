@@ -1,27 +1,27 @@
 import { Address, Enrollment } from '@prisma/client';
 import { request } from '@/utils/request';
-import { notFoundError, invalidCepError , requestError} from '@/errors';
+import { notFoundError, invalidCepError } from '@/errors';
 import { addressRepository, CreateAddressParams, enrollmentRepository, CreateEnrollmentParams } from '@/repositories';
 import { exclude } from '@/utils/prisma-utils';
-import {AddressEnrollments} from '@/protocols'
+import { AddressEnrollments } from '@/protocols';
 
 // TODO - Receber o CEP por parâmetro nesta função.OK
-async function getAddressFromCEP(cep:string): Promise<AddressEnrollments>  {
+async function getAddressFromCEP(cep: string): Promise<AddressEnrollments> {
   // FIXME: está com CEP fixo! OK
   const result = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
 
   // TODO: Tratar regras de negócio e lanças eventuais erros OK
   if (result.data.erro || !result.data) throw invalidCepError(cep);
- 
+
   // FIXME: não estamos interessados em todos os campos OK
   const address: AddressEnrollments = {
     logradouro: result.data.logradouro,
     complemento: result.data.complemento,
     bairro: result.data.bairro,
     cidade: result.data.localidade,
-    uf:result.data.uf
-  }
- 
+    uf: result.data.uf,
+  };
+
   return address;
 }
 
