@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
 import { enrollmentsService } from '@/services';
 import { any, number } from 'joi';
+import { CEP } from '@/services'
 
 export async function getEnrollmentByUser(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
@@ -23,8 +24,7 @@ export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, re
 
 // TODO - Receber o CEP do usuário por query params.
 export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response) {
-  const {cep} = req.query;
-  //console.log(cep);
+  const {cep} = req.query as CEP;
   
   const address = await enrollmentsService.getAddressFromCEP(cep);
 
