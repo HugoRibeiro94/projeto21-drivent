@@ -1,6 +1,6 @@
 import { Address, Enrollment } from '@prisma/client';
 import { request } from '@/utils/request';
-import { notFoundError, invalidCepError } from '@/errors';
+import { notFoundError, invalidCepError , requestError} from '@/errors';
 import { addressRepository, CreateAddressParams, enrollmentRepository, CreateEnrollmentParams } from '@/repositories';
 import { exclude } from '@/utils/prisma-utils';
 
@@ -66,7 +66,8 @@ async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollm
   const address = getAddressForUpsert(params.address);
 
   // TODO - Verificar se o CEP é válido antes de associar ao enrollment.
-  await getAddressFromCEP(address.cep);
+  const result = await getAddressFromCEP(address.cep);
+  if (!result) throw requestError(400,"cep invalido")
 
   const newEnrollment = await enrollmentRepository.upsert(params.userId, enrollment, exclude(enrollment, 'userId'));
 
