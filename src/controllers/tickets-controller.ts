@@ -10,10 +10,8 @@ export async function getTickets(req: Request, res: Response) {
 }
 
 export async function getTicketsType(req: Request, res: Response) {
-  console.log("opaa");
-  
-//const tickets = await ticketsService.getTicketsType();
-return res.status(httpStatus.OK).send("ticketsType");
+  const tickets = await ticketsService.getTicketsType();
+  return res.status(httpStatus.OK).send(tickets);
 }
 
 export async function postCreateTicket(req: Request, res: Response) {

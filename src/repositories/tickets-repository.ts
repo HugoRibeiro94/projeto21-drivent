@@ -1,9 +1,7 @@
 import { prisma } from '@/config';
 
 async function findTicketsType() {
-  return prisma.ticketType.findUnique({
-    where:{id:1}
-  });
+  return prisma.ticketType.findMany();
 }
 
 async function findTickets() {
