@@ -9,9 +9,17 @@ async function getHotels(userId: number) {
 
     const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
     if (!ticket) throw notFoundError();
+
     if (ticket.status !== 'PAID') throw paymentRequiredError();
 
+    const ticketTypeId = ticket.ticketTypeId;
+    const ticketType = await ticketsRepository.findTicketTypesById(ticketTypeId);
+    console.log(ticketType);
+    if (ticketType.isRemote === true) throw paymentRequiredError();
+    if (ticketType.includesHotel === false) throw paymentRequiredError();
+    
     const hotel = await hotelsRepository.findHotel();
+    if (!hotel) throw notFoundError();
     return hotel;
 }
 
