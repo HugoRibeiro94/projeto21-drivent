@@ -22,7 +22,7 @@ async function getHotels(userId: number) {
     return hotel;
 }
 
-async function getHotelsById(userId: number) {
+async function getHotelsById(userId: number, hotelId: number) {
     const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
     if (!enrollment) throw notFoundError();
 
@@ -35,7 +35,8 @@ async function getHotelsById(userId: number) {
     if (ticketType.isRemote === true) throw paymentRequiredError(); 
     if (ticketType.includesHotel === false) throw paymentRequiredError();
 
-    const hotel = await hotelsRepository.findHotelById(userId);
+    const hotel = await hotelsRepository.findHotelById(hotelId);
+    if (!hotel) throw notFoundError();
     return hotel;
 }
 
